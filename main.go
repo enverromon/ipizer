@@ -12,9 +12,21 @@ import (
 	"net"
 	"bytes"
 	"os/user"
+	"flag"
 )
 
 func main() {
+
+	hostedZoneId := flag.String("hosted_id", "", "Route53 Hosted Zone ID")
+	domainName := flag.String("domain", "", "Domain name")
+
+	flag.Parse()
+
+	if len(*hostedZoneId) == 0 || len(*domainName) == 0 {
+		println("HostedZoneID and Domain name must be set!!!")
+		flag.Usage()
+		os.Exit(1)
+	}
 
 	res, err := http.Get("http://ifcfg.net/")
 	checkError(err, "Getting my ip")
@@ -34,8 +46,8 @@ func main() {
 	cache, err := ioutil.ReadFile(cachePath)
 	checkError(err, "Opening the cache file")
 
-	println("Cached data:", string(cache[:len(cache)-1]))
-	last_ip := net.ParseIP(string(cache[:len(cache)-1])).To4()
+	println("Cached data:", string(cache[:len(cache)]))
+	last_ip := net.ParseIP(string(cache[:len(cache)])).To4()
 	if last_ip == nil {
 		panic("Cached data is not an ipv4 address")
 	}
@@ -56,7 +68,7 @@ func main() {
 				{
 					Action: aws.String("UPSERT"),
 					ResourceRecordSet: &route53.ResourceRecordSet{
-						Name: aws.String("home.kimia-rtb.mobi"),
+						Name: aws.String(*domainName),
 						Type: aws.String("A"),
 						ResourceRecords: []*route53.ResourceRecord{
 							{
@@ -68,7 +80,7 @@ func main() {
 				},
 			},
 		},
-		HostedZoneId: aws.String("Z1LRS2ZQHM8N83"),
+		HostedZoneId: aws.String(*hostedZoneId),
 	}
 	resp, err := r53.ChangeResourceRecordSets(params)
 	checkError(err, "Updating Route53")
