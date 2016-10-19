@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.enverromon.ipizer</string>
+    <key>Program</key>
+        <string>/usr/local/bin/ipizer</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>-domain home.kimia-rtb.mobi -hosted_id Z1LRS2ZQHM8N83</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>900</integer>
+</dict>
+</plist>
